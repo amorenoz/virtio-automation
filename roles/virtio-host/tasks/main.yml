@@ -4,9 +4,20 @@
 #
 - name: Set cmndline
   import_tasks: grub.yml
+  when: action == "setup"
+
 - name: Prepare server
   import_tasks: prepare.yml
+  when: action == "setup"
+
 - name: Run dpdk
   import_tasks: testmpd.yml
+  when: action == "setup"
+
 - name: Run VM
   import_tasks: virt.yml
+  when: action == "setup"
+
+- name: Tear Down server
+  import_tasks: teardown.yml
+  when: action == "teardown"

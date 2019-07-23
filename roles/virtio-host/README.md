@@ -1,7 +1,12 @@
 VirtIO-host
 ==========
 
-This role prepares a host to run a virtio benchmark. It performs the following tasks:
+This role prepares a host to run a virtio benchmark.
+It can setup or teardown a virtio host.
+
+The behaviour of the role is controlled by a variable named "action". Valid values are: "setup" (default) and "teardown"
+
+Setup tasks include:
 
  - Configure the host correctly:
  -  - setting hugepages in the kernel's cmndline
@@ -17,6 +22,11 @@ appropriate virtio-vhost interfaces.
  - - It uses a specific libvirt network to have management access to the guest (i.e: ssh).
 DHCP host reservation is used to fix the IP address and a hook is installed to enable port-forwarding, hence the guest should be accessible via ssh on {host}:2222
 
+Teardown tasks include:
+
+ - Stop the guest VM
+ - Stop the running testpmd instance
+
 In order to use this role, a ssh key must be created for the guest:
 
     $ ssh-keygen -t rsa -N "" -f my.key
@@ -31,6 +41,7 @@ In order to use this role, a ssh key must be created for the guest:
               - "0000:04:00.0"
               - "0000:04:00.1"
             guest_pubkey: guest_id_rsa.pub
+            action: setup
     EOF
     $ ansible-playbook benchmark.yml
 
@@ -42,6 +53,13 @@ The host must have two dpdk-compatible NICS
 
 Role Variables
 --------------
+
+Main variables:
+
+* action: The action to perform. Allowed values:
+* * setup: Set the host up
+* * teardown: Stop all services
+
 
 Guest Variables:
 
@@ -65,8 +83,6 @@ be reattached for debugging purposes. This variable specifies the name of the se
 Example Playbook
 ----------------
 
-Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
-
     - hosts: servers
       roles:
          -role: virtio-host
@@ -76,6 +92,12 @@ Including an example of how to use your role (for instance, with variables passe
               - 0000:02:10.1
             remote_image: https://example.com/rhel8.1.x86_64.qcow2
 
+
+    - hosts: servers
+      roles:
+         -role: virtio-host
+          vars:
+            action: teardown
 
 
 TODOs

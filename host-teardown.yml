@@ -1,0 +1,10 @@
+---
+- hosts: kvm-hosts
+  tasks:
+    - import_role:
+        name: virtio-host
+      vars:
+        nics:
+          - "0000:04:00.0"
+          - "0000:04:00.1"
+        action: teardown

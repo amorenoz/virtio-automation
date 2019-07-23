@@ -1,0 +1,11 @@
+- name: Stop guest
+  virt:
+    name: "{{ guest_name }}"
+    state: destroyed
+    uri: 'qemu:///system'
+
+- name: Kill host's dpdk instance
+  shell: >
+    pgrep testpmd > xargs kill || true
+    tmux kill-session -t {{ testmpd_session }}
+  ignore_errors: true
