@@ -1,0 +1,8 @@
+- hosts: pkt-gen
+  tasks:
+    - import_role:
+        name: trex
+      vars:
+        nics:
+          - "04:00.0"
+          - "04:00.1"

@@ -1,0 +1,35 @@
+all:
+  hosts:
+
+  children:
+    # kvm-hosts: The main target
+    kvm-hosts:
+      my-kvm-host:
+        ansible_host: kvmhost.example.com
+        ansible_user: root
+        ansible_port: 22
+        remote_image: http://download.eng.brq.redhat.com/rhel-7/rel-eng/RHEL-7/latest-RHEL-7.6/compose/Server/x86_64/images/rhel-guest-image-7.6-210.x86_64.qcow2
+        nics:
+          - "0000:04:00.0"
+          - "0000:04:00.1"
+    
+    # guests: The guest VM. The ansible playbook will add port-forwarding
+    # rules to the host so the guest is accesible at port 2222, so the
+    # "ansible_host" should be the same the kvm-host and "ansbile_port" 2222
+    # Modify the ansible_ssh_private_keyfile to the apropriate keyfile
+    guests:
+      my-guest:
+        ansible_host: kvmhost.example.com
+        ansible_user: root
+        ansible_port: 2222
+        ansible_ssh_private_key_file: guest_id_rsa
+    
+    # injectors: This host will be used to inject traffic into the target
+    # It should be physically connected to the target via two different NICs
+    injectors:
+      virtlab218:
+        ansible_host: trex.example.com
+        ansible_ssh_user: root
+        nics:
+          - "0000:04:00.0"
+          - "0000:04:00.1"
