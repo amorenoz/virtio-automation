@@ -1,8 +1,12 @@
+- name: Check if we have hugepages
+  shell: awk -e '/Hugepagesize:/ {print $2}' /proc/meminfo
+  register: hp_size
 
 - name: Check if needed cmndline options are found
   shell: grep GRUB_CMDLINE_LINUX /etc/default/grub | grep -c "{{ cmdline_options }}"
   register: cmdline_opts
   ignore_errors: true
+  when: hp_size.stdout != "1048576"
 
 - name: Edit commandline options
   lineinfile:
@@ -10,21 +14,31 @@
     regexp: 'GRUB_CMDLINE_LINUX="(.*)"'
     line: 'GRUB_CMDLINE_LINUX="\1 {{ cmdline_options }}"'
     backrefs: yes
-  when: cmdline_opts.stdout == "0"
+  when:
+    - hp_size.stdout != "1048576"
+    - cmdline_opts.stdout == "0"
 
-- name: update-grub
+- name: Update bios-based grub
   command: grub2-mkconfig –o /boot/grub2/grub.cfg
-  when: cmdline_opts.stdout == "0"
+  when:
+    - hp_size.stdout != "1048576"
+    - cmdline_opts.stdout == "0"
 
 - name: reboot if we need it
   command: sleep 2 && shutdown -r now "Ansible just modified cmndline options"
   async: 1 
   poll: 0
   ignore_errors: true
-  when: cmdline_opts.stdout == "0"
+  when:
+    - hp_size.stdout != "1048576"
+    - cmdline_opts.stdout == "0"
 
 - name: Wait 600 seconds for target connection to become reachable/usable
   wait_for_connection:
-  when: cmdline_opts.stdout == "0"
+  when:
+    - hp_size.stdout != "1048576"
+    - cmdline_opts.stdout == "0"
 
-
+- name: Check if we have managed to configure hugepages
+  shell: awk -e '/Hugepagesize:/ {print $2}' /proc/meminfo | grep 1048576
+  when: hp_size.stdout != "1048576"

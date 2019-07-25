@@ -1,7 +1,13 @@
 ---
 # tasks to set up testpmd
 #
-- name: insert vfio modules
+- name: insert vfio module
+  modprobe:
+    name: vfio
+    state: present
+    params: enable_unsafe_noiommu_mode=1
+
+- name: insert vfio-pci module
   modprobe:
     name: vfio-pci
     state: present
@@ -10,12 +16,10 @@
   command: dpdk-devbind -b vfio-pci {{ item }}
   loop: "{{ nics }}"
 
-# a nice way to have testpmd running in the background
-# and be able to attach it's terminal for debugging purposes
-# is to run it in a tmux session
-- name: ensure tmux is installed
+- name: Install dependencies
   yum:
-   name: tmux
+   name:
+     - tmux 
    state: present
 
 - name: copy testpmd commands
@@ -27,10 +31,26 @@
   shell: pgrep testpmd | xargs kill
   ignore_errors: true
 
+- name: killing existing tmux sessions
+  shell: tmux kill-session -t {{ testpmd_session }}
+  ignore_errors: true
+
+- name: rm previous socket files
+  file:
+    path: "{{ item }}"
+    state: absent
+  loop:
+    - /tmp/vhost-user1
+    - /tmp/vhost-user2
+
+# Run the testpmd process inside a tmux session is
+# a nice way to have testpmd running in the background
+# and be able to attach it's terminal for debugging purposes
+# by adding a "|| cat" at the end we ensure that if the
+# command fails, the session stays open for debugging.
+
 - name: run testpmd in host
   shell: >
-       rm -f /tmp/vhost-user{1,2};
-       tmux kill-session -t {{ testpmd_session }};
        tmux new-session -s {{ testpmd_session }} -d
        "testpmd -l 0,2,3,4,5
        --socket-mem=1024
@@ -44,7 +64,7 @@
        --txq=1
        --nb-cores=4
        --forward-mode=io
-       --cmdline-file=/tmp/testpmd.commands";
+       --cmdline-file=/tmp/testpmd.commands || cat" 
   register: testpmd
 
 - debug:
@@ -52,3 +72,6 @@
 - debug:
     msg: "{{ testpmd.stderr }}"
 
+- name: get PID of testpmd
+  shell: pgrep testpmd
+  register: pid_of_testpmd

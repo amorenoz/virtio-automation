@@ -9,3 +9,8 @@
     pgrep testpmd > xargs kill || true
     tmux kill-session -t {{ testmpd_session }}
   ignore_errors: true
+
+- name: Remove guest image
+  file:
+    path: "{{ local_image_file }}"
+    state: absent

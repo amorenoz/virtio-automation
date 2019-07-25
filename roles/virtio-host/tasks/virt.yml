@@ -4,18 +4,19 @@
   yum:
     name: python3-lxml
     state: installed
+  when: ansible_facts['os_family'] == "RedHat" and ansible_facts['distribution_major_version'] == "8"
 
-- name: template mgt xml file
-  template:
-    dest: /tmp/mgt-net.xml
-    src: mgt-net.xml.j2 
-    mode: 0600
+- name: install libvirt dependencies
+  yum:
+    name: python-lxml
+    state: installed
+  when: ansible_facts['os_family'] == "RedHat" and ansible_facts['distribution_major_version'] == "7"
 
 - name: define mgt network
   virt_net:
     command: define
     name: mgt
-    xml: /tmp/mgt-net.xml
+    xml: "{{ lookup('template', 'mgt-net.xml.j2') }}"
 
 - name: start mgt network
   virt_net:
