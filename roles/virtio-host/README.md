@@ -60,6 +60,8 @@ Main variables:
 * * setup: Set the host up
 * * teardown: Stop all services
 
+* skip_grub: The default behaviour is to configue the grub's cmdline.
+This option can be set to true to skip this (kind of intrusive) part
 
 Guest Variables:
 

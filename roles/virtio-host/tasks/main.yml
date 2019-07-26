@@ -4,7 +4,9 @@
 #
 - name: Set cmndline
   import_tasks: grub.yml
-  when: action == "setup"
+  when:
+    - action == "setup"
+    - skip_grub == false
 
 - name: Prepare server
   import_tasks: prepare.yml

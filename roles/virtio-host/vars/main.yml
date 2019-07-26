@@ -2,6 +2,8 @@
 # vars file for host_setup
 
 action: setup # default action: setup. Allowed actions: setup / teardown
+skip_grub: false # Flag to skip grub configuration.
+
 remote_image: http://download.eng.brq.redhat.com/rhel-8/rel-eng/RHEL-8/latest-RHEL-8/compose/BaseOS/x86_64/images/rhel-guest-image-8.1-109.x86_64.qcow2
 local_image_file: /var/lib/libvirt/images/virto-autoguest-image.qcow2
 #local_image_file: /tmp/rhel-guest-image-8.0.0.x86_64.qcow2
