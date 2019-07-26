@@ -29,7 +29,11 @@
   </numatune>
 
   <os>
+    {%- if qemu=="repo" -%}
     <type arch='x86_64' machine='pc-q35-rhel7.6.0'>hvm</type>
+    {%- else %}
+    <type arch='x86_64' machine='q35'>hvm</type>
+    {%- endif %}
     <boot dev='hd'/>
   </os>
   <features>

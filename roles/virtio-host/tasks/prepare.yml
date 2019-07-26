@@ -12,7 +12,7 @@
     - dpdk-tools
    state: present
 
-- name: Check if the image file 
+- name: Check if the image file exists
   stat:
     path: "{{ local_image_file  }}"
   register: local_image
@@ -44,6 +44,11 @@
     dest: /tmp/id_rsa.pub
     src: "{{ guest_pubkey }}"
   when: local_image.stat.exists == False 
+
+- name: Install virt-sysprep
+  yum:
+    name: libguestfs-tools-c
+    state: present
 
 - name: prepare_image
   command: >

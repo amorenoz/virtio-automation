@@ -16,6 +16,10 @@
   import_tasks: testmpd.yml
   when: action == "setup"
 
+- name: Setup QEMU
+  import_tasks: build-qemu.yml
+  when: action == "setup"
+
 - name: Run VM
   import_tasks: virt.yml
   when: action == "setup"

@@ -1,0 +1,54 @@
+- name: Install qemu if requested
+  yum:
+    name:
+      - qemu-kvm
+    state: latest
+  when: qemu == "repo"
+
+- name: Prepare build dir
+  file:
+    path: "{{ qemu_src_path }}"
+    state: absent
+
+- name: Clone qemu
+  git:
+    version: "{{ qemu_version }}"
+    repo: git://git.qemu.org/qemu.git
+    dest: "{{ qemu_src_path }}"
+  when: qemu == "build"
+
+
+- name: Install build dependencies
+  yum:
+    name:
+      - bison
+      - flex
+      - gcc
+      - automake
+    state: installed
+
+- name: Build qemu
+  shell: |
+    set -e
+    cd {{ qemu_src_path }};
+    mkdir build;
+    cd build;
+    ../configure --target-list=x86_64-softmmu;
+    make -j4;
+    make install DESTDIR={{ qemu_install_path }};
+
+  when: qemu == "build"
+
+- name: Remove existing qemu package if needed
+  yum:
+    name:
+      - qemu-kvm
+    state: absent
+  when: qemu != "repo"
+
+- name: Symlink so that libvirt runs our qemu binary
+  file:
+    state: link
+    src: "{{ qemu_install_path }}/usr/local/bin/qemu-system-x86_64"
+    path: /usr/libexec/qemu-kvm
+  when: qemu != "repo"

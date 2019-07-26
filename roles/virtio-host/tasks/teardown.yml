@@ -1,8 +1,10 @@
+
 - name: Stop guest
   virt:
     name: "{{ guest_name }}"
     state: destroyed
     uri: 'qemu:///system'
+  ignore_errors: true  # The task fails if vm does not exist
 
 - name: Kill host's dpdk instance
   shell: >
@@ -13,4 +15,11 @@
 - name: Remove guest image
   file:
     path: "{{ local_image_file }}"
+    state: absent
+
+- name: Clean used directories
+  file:
+    path:
+      - "{{ qemu_src_path }}"
+      - "{{ qemu_install_path }}"
     state: absent

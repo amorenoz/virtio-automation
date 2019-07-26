@@ -5,7 +5,7 @@ action: setup # default action: setup. Allowed actions: setup / teardown
 skip_grub: false # Flag to skip grub configuration.
 
 remote_image: http://download.eng.brq.redhat.com/rhel-8/rel-eng/RHEL-8/latest-RHEL-8/compose/BaseOS/x86_64/images/rhel-guest-image-8.1-109.x86_64.qcow2
-local_image_file: /var/lib/libvirt/images/virto-autoguest-image.qcow2
+local_image_file: /var/lib/libvirt/images/virtio-auto-image.qcow2
 #local_image_file: /tmp/rhel-guest-image-8.0.0.x86_64.qcow2
 
 cmdline_options: intel_pstate=disable mce=ignore_ce default_hugepagesz=1G hugepagesz=1G hugepages=6 isolcpus=2-7 rcu_nocbs=2-7 nohz_full=2-7 iommu=pt intel_iommu=on
@@ -20,3 +20,17 @@ guest_pubkey: guest_id_rsa.pub
 
 guest_name: rhel8-bench
 testpmd_session: host-testpmd
+
+# QEMU specific variables:
+# qemu: Variable that controls what to do WRT qemu. Possible values:
+#   repo: install it from the repository (i.e: yum install qemu-kvm)
+#   local: assume a qemu binary is already installed in 
+#       '{{ qemu_install_path }}/usr/local/bin/qemu-system-x86_64'
+#        and just use it
+#   build: clone qemu, checkout {{ version }}, build it, install it and use it
+qemu: build
+# build qemu vars:
+qemu_install_path: /opt/virtio-auto/qemu/
+qemu_src_path: /opt/virtio-auto/src/qemu/
+# version of qemu to build
+qemu_version: HEAD
