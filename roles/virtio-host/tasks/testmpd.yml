@@ -60,8 +60,8 @@
        "{{ testpmd_bin }} -l 0,2,3,4,5
        --socket-mem=1024
        -n 4
-       --vdev 'net_vhost0,iface=/tmp/vhost-user1'
-       --vdev 'net_vhost1,iface=/tmp/vhost-user2'
+       --vdev 'net_vhost0,iface=/tmp/vhost-user1{% if guest_iommu %},iommu-support=1{% endif %}'
+       --vdev 'net_vhost1,iface=/tmp/vhost-user2{% if guest_iommu %},iommu-support=1{% endif %}'
        --
        --portmask=f
        -i

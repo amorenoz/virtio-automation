@@ -39,12 +39,6 @@
     name: libvirtd
     state: restarted
 
-- name: template guest xml file
-  template:
-    dest: /tmp/guest.xml
-    src: guest.xml.j2
-    mode: 0664
-
 # First ensure there is no other vm with the same name
 - name: destroy
   virt:
@@ -60,11 +54,19 @@
   ignore_errors: true
 
 # Define and start guest
-- name: define guest vm
+- name: define guest vm (no IOMMU)
   virt:
     command: define
     xml: "{{ lookup('template', 'guest.xml.j2') }}"
     autostart: no
+  when: iommu == false
+
+- name: define guest vm (IOMMU)
+  virt:
+    command: define
+    xml: "{{ lookup('template', 'guest_iommu.xml.j2') }}"
+    autostart: no
+  when: iommu == true
 
 - name: start_vm
   virt:

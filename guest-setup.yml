@@ -3,3 +3,5 @@
   tasks:
     - import_role:
         name: virtio-guest-dpdk
+      vars:
+        iommu: true

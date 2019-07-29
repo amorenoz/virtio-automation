@@ -10,7 +10,7 @@
   modprobe:
     name: vfio
     state: present
-    params: enable_unsafe_noiommu_mode=1
+    params: "{% if not iommu %}enable_unsafe_noiommu_mode=1{% endif %}"
 
 - name: insert vfio-pci module
   modprobe:
@@ -25,8 +25,30 @@
   shell: pgrep testpmd | xargs kill
   ignore_errors: true
 
-- name: run testpmd in host
-  shell: tmux new-session -s guest-testmpd -d "testpmd -l 0,1,2 --socket-mem 1024 -n 4 --proc-type auto --file-prefix pg -- --portmask=3 --forward-mode=io --port-topology=chained --disable-rss -i --rxq=1 --txq=1 --rxd=256 --txd=256 --nb-cores=2 --auto-start || cat"
+- name: killing existing tmux sessions
+  shell: tmux kill-session -t guest-testpmd
+  ignore_errors: true
+
+- name: run testpmd in guest
+  shell: >
+      tmux new-session -s guest-testmpd -d
+      "testpmd -l 0,1,2
+      --socket-mem 1024
+      -n 4
+      --proc-type auto
+      --file-prefix pg
+      --
+      --portmask=3
+      --forward-mode=io
+      --port-topology=chained
+      --disable-rss
+      -i
+      --rxq=1
+      --txq=1
+      --rxd=256
+      --txd=256
+      --nb-cores=2
+      --auto-start || cat"
   register: guest_testpmd
 
 - debug:
