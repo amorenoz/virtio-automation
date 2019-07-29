@@ -1,6 +1,12 @@
 ---
 # tasks to set up testpmd
 #
+
+- name: set testpmd binaries
+  set_fact:
+    testpmd_bin: "{% if dpdk == 'repo' %}/usr/bin/testpmd{% else %} {{ dpdk_install_path }}/bin/testpmd {% endif %} "
+    devbind_bin: "{% if dpdk == 'repo' %}/usr/sbin/dpdk-devbind{% else %} {{ dpdk_install_path }}/sbin/dpdk-devbind{% endif %} "
+
 - name: insert vfio module
   modprobe:
     name: vfio
@@ -13,13 +19,13 @@
     state: present
 
 - name: bind NICS to vfio driver
-  command: dpdk-devbind -b vfio-pci {{ item }}
+  command: "{{ devbind_bin }} -b vfio-pci {{ item }}"
   loop: "{{ nics }}"
 
 - name: Install dependencies
   yum:
    name:
-     - tmux 
+     - tmux
    state: present
 
 - name: copy testpmd commands
@@ -48,11 +54,10 @@
 # and be able to attach it's terminal for debugging purposes
 # by adding a "|| cat" at the end we ensure that if the
 # command fails, the session stays open for debugging.
-
 - name: run testpmd in host
   shell: >
        tmux new-session -s {{ testpmd_session }} -d
-       "testpmd -l 0,2,3,4,5
+       "{{ testpmd_bin }} -l 0,2,3,4,5
        --socket-mem=1024
        -n 4
        --vdev 'net_vhost0,iface=/tmp/vhost-user1'
@@ -64,7 +69,7 @@
        --txq=1
        --nb-cores=4
        --forward-mode=io
-       --cmdline-file=/tmp/testpmd.commands || cat" 
+       --cmdline-file=/tmp/testpmd.commands || cat"
   register: testpmd
 
 - debug:

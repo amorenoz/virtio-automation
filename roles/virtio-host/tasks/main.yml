@@ -12,6 +12,10 @@
   import_tasks: prepare.yml
   when: action == "setup"
 
+- name: Setup dpdk
+  import_tasks: build-dpdk.yml
+  when: action == "setup"
+
 - name: Run dpdk
   import_tasks: testmpd.yml
   when: action == "setup"

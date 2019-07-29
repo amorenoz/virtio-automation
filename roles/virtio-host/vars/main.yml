@@ -28,9 +28,22 @@ testpmd_session: host-testpmd
 #       '{{ qemu_install_path }}/usr/local/bin/qemu-system-x86_64'
 #        and just use it
 #   build: clone qemu, checkout {{ version }}, build it, install it and use it
-qemu: build
+qemu: build 
 # build qemu vars:
 qemu_install_path: /opt/virtio-auto/qemu/
 qemu_src_path: /opt/virtio-auto/src/qemu/
 # version of qemu to build
 qemu_version: HEAD
+
+# DPDK specific variables:
+# dpdk: Variable that controls what to do WRT dpdk. Possible values:
+#   repo: install it from the repository (i.e: yum install dpdk)
+#   local: assume a installation in
+#       '{{ dpdk_install_path }} and just use it
+#   build: clone dpdk, checkout {{ dpdk_version }}, build it, install it and use it
+dpdk: build
+# build dpdk vars:
+dpdk_install_path: /opt/virtio-auto/dpdk/
+dpdk_src_path: /opt/virtio-auto/src/dpdk/
+# version of dpdk to build
+dpdk_version: HEAD
