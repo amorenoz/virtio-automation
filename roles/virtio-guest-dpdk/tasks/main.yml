@@ -4,10 +4,13 @@
 
 - name: install repository
   yum_repository:
-    name: RHEL-8.0.0
-    description: EPEL YUM repo
-    baseurl: http://download.lab.bos.redhat.com/rel-eng/repos/rhel-8.0.0-candidate/$basearch
+    name: virtio-auto-{{ index }}
+    description: virtio-auto repository
+    baseurl: "{{ item }}"
     gpgcheck: no
+  loop: "{{ repos }}"
+  loop_control:
+    index_var: index
 
 - name: Update grub and reboot
   import_tasks: grub.yml

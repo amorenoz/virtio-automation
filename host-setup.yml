@@ -1,5 +1,6 @@
 ---
 - hosts: kvm-hosts
+  vars:
   tasks:
     - import_role:
         name: virtio-host
@@ -8,3 +9,16 @@
           - "0000:04:00.0"
           - "0000:04:00.1"
         guest_pubkey: guest_id_rsa.pub
+        qemu: repo
+        dpdk: repo
+        iommu: true
+    - pause: # Pause for 30 secs to leave time for guest to boot
+        seconds: 30
+
+- hosts: guests
+  tasks:
+    - import_role:
+        name: virtio-guest-dpdk
+      vars:
+        iommu: true
+

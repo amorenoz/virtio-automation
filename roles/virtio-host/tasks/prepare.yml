@@ -1,6 +1,5 @@
 ---
 # Tasks to prepare the host
-#
 
 # TODO: It would be nice to selecively not install the main dependencies but
 # download the code (specific revision) and build it
@@ -19,14 +18,19 @@
 
 - name: Check that the base image exists
   stat:
-    path: /var/lib/libvirt/images/rhel-base-image.qcow2
+    path: "{{ cache_path }}/{{ image_cache_name }}"
   register: base_image
   when: local_image.stat.exists == False
+
+- name: Create cache directory
+  file:
+    path: "{{ cache_path }}"
+    state: directory
 
 - name: download base image
   get_url:
     url: '{{ remote_image }}'
-    dest: /var/lib/libvirt/images/rhel-base-image.qcow2
+    dest: "{{ cache_path }}/{{ image_cache_name }}"
     mode: '0640'
   when:
     - local_image.stat.exists == False 
@@ -35,7 +39,7 @@
 - name: copy base image
   copy:
     dest: '{{ local_image_file }}'
-    src: /var/lib/libvirt/images/rhel-base-image.qcow2
+    src: "{{ cache_path }}/{{ image_cache_name }}"
     remote_src: true
   when: local_image.stat.exists == False 
 

@@ -4,9 +4,13 @@
 action: setup # default action: setup. Allowed actions: setup / teardown
 skip_grub: false # Flag to skip grub configuration.
 
+# Path to the remote image to download
 remote_image: http://download.eng.brq.redhat.com/rhel-8/rel-eng/RHEL-8/latest-RHEL-8/compose/BaseOS/x86_64/images/rhel-guest-image-8.1-109.x86_64.qcow2
+# The remote image can be cached under this name locally to avoid long downloads
+image_cache_name: rhel8-base.qcow2
+cache_path: /opt/virtio-auto/cache/
+
 local_image_file: /var/lib/libvirt/images/virtio-auto-image.qcow2
-#local_image_file: /tmp/rhel-guest-image-8.0.0.x86_64.qcow2
 
 cmdline_options: intel_pstate=disable mce=ignore_ce default_hugepagesz=1G hugepagesz=1G hugepages=6 isolcpus=2-7 rcu_nocbs=2-7 nohz_full=2-7 iommu=pt intel_iommu=on
 

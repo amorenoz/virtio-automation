@@ -7,7 +7,9 @@
 
 - name: Prepare build dir
   file:
-    path: "{{ qemu_src_path }}"
+    path:
+      - "{{ qemu_src_path }}"
+      - "{{ qemu_install_path }}"
     state: absent
 
 - name: Clone qemu
