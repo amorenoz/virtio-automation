@@ -105,11 +105,6 @@
       <target chassis='6' port='0xd'/>
       <address type='pci' domain='0x0000' bus='0x00' slot='0x01' function='0x5'/>
     </controller>
-    <controller type='pci' index='7' model='pcie-root-port'>
-      <model name='pcie-root-port'/>
-      <target chassis='7' port='0xe'/>
-      <address type='pci' domain='0x0000' bus='0x00' slot='0x01' function='0x6'/>
-    </controller>
     <controller type='virtio-serial' index='0'>
       <address type='pci' domain='0x0000' bus='0x03' slot='0x00' function='0x0'/>
     </controller>
@@ -121,21 +116,27 @@
     </interface>
 
 
+    <controller type='pci' index='10' model='pcie-root-port'>
+      <model name='pcie-root-port'/>
+      <address type='pci' domain='0x0000' bus='0x00' slot='0x0a' function='0x0'/>
+    </controller>
+    <controller type='pci' index='11' model='pcie-root-port'>
+      <model name='pcie-root-port'/>
+      <address type='pci' domain='0x0000' bus='0x00' slot='0x0b' function='0x0'/>
+    </controller>
     <interface type='vhostuser'>
       <mac address='56:48:4f:53:54:01'/>
       <source type='unix' path='/tmp/vhost-user1' mode='client'/>
       <model type='virtio'/>
-      <link state='down'/>
       <driver name='vhost' rx_queue_size='256' />
-      <address type='pci' domain='0x0000' bus='0x07' slot='0x00' function='0x0'/>
+      <address type='pci' domain='0x0000' bus='0x0a' slot='0x00' function='0x0'/>
     </interface>
     <interface type='vhostuser'>
       <mac address='56:48:4f:53:54:02'/>
       <source type='unix' path='/tmp/vhost-user2' mode='client'/>
       <model type='virtio'/>
-      <link state='down'/>
       <driver name='vhost' rx_queue_size='256' />
-      <address type='pci' domain='0x0000' bus='0x07' slot='0x00' function='0x1'/>
+      <address type='pci' domain='0x0000' bus='0x0b' slot='0x00' function='0x0'/>
     </interface>
 
     <serial type='pty'>

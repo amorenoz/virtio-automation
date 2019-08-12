@@ -17,6 +17,7 @@ Role Variables
 
 - nics: The list of NICs to use in the dpdk application specified by their PCI addresses
 
+- iommu: [true|false] If iommu is enabled
 
 Example Playbook
 ----------------
