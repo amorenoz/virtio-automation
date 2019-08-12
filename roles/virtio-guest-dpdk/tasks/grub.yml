@@ -13,18 +13,17 @@
   when: cmdline_opts.stdout == "0"
 
 - name: update-grub
-  command: grub2-mkconfig –o /boot/grub2/grub.cfg
+  shell: grub2-mkconfig > /boot/grub2/grub.cfg
   when: cmdline_opts.stdout == "0"
 
 - name: reboot if we need it
-  command: sleep 2 && shutdown -r now "Ansible just modified cmndline options"
-  async: 1 
-  poll: 0
-  ignore_errors: true
+  reboot:
+    test_command: cat /proc/cmdline | grep "{{ guest_cmdline_options }}"
   when: cmdline_opts.stdout == "0"
 
 - name: Wait 600 seconds for target connection to become reachable/usable
   wait_for_connection:
+  delay: 5
   when: cmdline_opts.stdout == "0"
 
 

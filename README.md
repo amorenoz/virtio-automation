@@ -116,6 +116,9 @@ To install t-rex:
     $ ansible-playbook -i ./your_inventory.yml trex-setup.yml
 
 
+Note: If you use --ask-pass, you will need to `export ANSIBLE_HOST_KEY_CHECKING=False` to run guest-related playbooks
+(at least the first time)
+
 
 ## TODO
 * Support vIO-MMU architecture

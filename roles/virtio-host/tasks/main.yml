@@ -17,7 +17,7 @@
   when: action == "setup"
 
 - name: Run dpdk
-  import_tasks: testmpd.yml
+  import_tasks: testpmd.yml
   when: action == "setup"
 
 - name: Setup QEMU

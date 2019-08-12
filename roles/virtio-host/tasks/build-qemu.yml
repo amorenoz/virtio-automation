@@ -27,14 +27,16 @@
       - flex
       - gcc
       - automake
+      - glib2-devel
+      - pixman-devel
     state: installed
 
 - name: Build qemu
   shell: |
     set -e
     cd {{ qemu_src_path }};
-    mkdir build;
-    cd build;
+    mkdir _build;
+    cd _build;
     ../configure --target-list=x86_64-softmmu;
     make -j4;
     make install DESTDIR={{ qemu_install_path }};

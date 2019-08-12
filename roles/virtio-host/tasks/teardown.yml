@@ -19,9 +19,10 @@
 
 - name: Clean used directories
   file:
-    path:
+    path: "{{ item }}"
+    state: absent
+  with_items:
       - "{{ qemu_src_path }}"
       - "{{ qemu_install_path }}"
       - "{{ dpdk_install_path }}"
       - "{{ dpdk_src_path }}"
-    state: absent

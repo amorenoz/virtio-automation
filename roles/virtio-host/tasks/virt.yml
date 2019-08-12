@@ -2,7 +2,10 @@
 # tasks to spin up a vm using libvirt
 - name: install libvirt dependencies
   yum:
-    name: python3-lxml
+    name:
+      - python3-lxml
+      - python3-libvirt
+      - libvirt
     state: installed
   when: ansible_facts['os_family'] == "RedHat" and ansible_facts['distribution_major_version'] == "8"
 
@@ -11,6 +14,24 @@
     name: python-lxml
     state: installed
   when: ansible_facts['os_family'] == "RedHat" and ansible_facts['distribution_major_version'] == "7"
+
+- name: Set selinux to permissive
+  selinux:
+    policy: targeted
+    state: permissive
+
+- name: Set qemu's user
+  lineinfile:
+    line: user = "root"
+    state: present
+    path: /etc/libvirt/qemu.conf
+  register: libvirt_config
+
+- name: Restart libvirt
+  service:
+    name: libvirtd
+    state: restarted
+  when: libvirt_config.changed
 
 - name: define mgt network
   virt_net:

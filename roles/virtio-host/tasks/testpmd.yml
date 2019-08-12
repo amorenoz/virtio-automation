@@ -1,6 +1,10 @@
 ---
 # tasks to set up testpmd
 #
+- name: Ensure python3 is used
+  alternatives:
+    name: python
+    path: /usr/bin/python3
 
 - name: set testpmd binaries
   set_fact:
@@ -80,3 +84,4 @@
 - name: get PID of testpmd
   shell: pgrep testpmd
   register: pid_of_testpmd
+
