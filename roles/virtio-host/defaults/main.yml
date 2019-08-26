@@ -1,4 +1,9 @@
 ---
 # defaults file for host_setup
 
-state: setup
+# Host variables
+nics:
+ - "0000:04:00.0"
+ - "0000:04:00.1"
+
+remote_image: http://download.eng.brq.redhat.com/rhel-8/rel-eng/RHEL-8/latest-RHEL-8/compose/BaseOS/x86_64/images/rhel-guest-image-8.1-109.x86_64.qcow2

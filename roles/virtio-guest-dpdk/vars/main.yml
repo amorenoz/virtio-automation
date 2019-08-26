@@ -5,10 +5,6 @@ guest_cmdline_options: default_hugepagesz=1G hugepagesz=1G hugepages=1 intel_iom
 # Set IOMMU support
 iommu: false
 
-# repositories to install (or list thereof)
-repos:
-  -
-
 # nics to use by dpdk
 nics:
  - "0000:0a:00.0"

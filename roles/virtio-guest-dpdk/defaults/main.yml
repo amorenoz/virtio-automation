@@ -1,2 +1,5 @@
 ---
 # defaults file for guest-dpdk
+# repositories to install (or list thereof)
+repos:
+  - http://download.lab.bos.redhat.com/rel-eng/repos/rhel-8.0.0-candidate/$basearch
