@@ -61,7 +61,11 @@
     <suspend-to-disk enabled='no'/>
   </pm>
   <devices>
+    {%- if qemu=="repo" -%}
     <emulator>/usr/libexec/qemu-kvm</emulator>
+    {%- else %}
+    <emulator>{{ qemu_install_path }}/usr/local/bin/qemu-system-x86_64</emulator>
+    {%- endif %}
     <iommu model='intel'>
       <driver intremap='on' iotlb='on'/>
     </iommu>

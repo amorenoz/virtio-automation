@@ -43,16 +43,10 @@
 
   when: qemu == "build"
 
-- name: Remove existing qemu package if needed
-  yum:
-    name:
-      - qemu-kvm
-    state: absent
-  when: qemu != "repo"
+# I think we don't need to do this
+#- name: Remove existing qemu package if needed
+#  yum:
+#    name: qemu-kvm
+#    state: absent
+#  when: qemu != "repo"
 
-- name: Symlink so that libvirt runs our qemu binary
-  file:
-    state: link
-    src: "{{ qemu_install_path }}/usr/local/bin/qemu-system-x86_64"
-    path: /usr/libexec/qemu-kvm
-  when: qemu != "repo"
