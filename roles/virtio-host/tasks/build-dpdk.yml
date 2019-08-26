@@ -1,0 +1,49 @@
+- name: Install dpdk if requested
+  yum:
+    name:
+      - dpdk-tools
+    state: latest
+  when: dpdk == "repo"
+
+- name: Install build dependencies
+  yum:
+    name:
+      - numactl-devel
+      - automake
+      - gcc
+      - kernel-devel
+      - make
+      - git
+      - elfutils-libelf-devel
+    state: installed
+  when: dpdk == "build"
+
+- name: Prepare build dir
+  file:
+    path: "{{ dpdk_src_path }}"
+    state: absent
+  when: dpdk == "build"
+
+- name: Clone dpdk
+  git:
+    version: "{{ dpdk_version }}"
+    repo: git://dpdk.org/dpdk
+    dest: "{{ dpdk_src_path }}"
+  when: dpdk == "build"
+
+- name: Remove existing dpdk package if needed
+  yum:
+    name:
+      - dpdk
+      - dpdk-tools
+    state: absent
+  when: dpdk != "repo"
+
+- name: Build dpdk
+  shell: |
+    set -e
+    cd {{ dpdk_src_path }};
+    export RTE_SDK=$PWD
+    make -j4 install T=x86_64-native-linux-gcc DESTDIR={{ dpdk_install_path }}
+  when: dpdk == "build"
+
